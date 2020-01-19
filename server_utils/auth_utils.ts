@@ -37,7 +37,7 @@ export function createSignedUrl (
 
   return new Promise ( async (resolve, reject) => {
 
-    // create the sso_url_params
+    // create the object used to pass into create_sso_embed_url
     const sso_url_params: IEmbedSsoUrlParams = Object.assign(
       {
         target_url: `https://${path.join(host,src)}`
