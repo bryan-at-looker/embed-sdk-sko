@@ -1,0 +1,15 @@
+.env
+.idea
+.npmrc
+.vscode
+.github
+__pycache__
+*.pyc
+*.tgz
+coverage
+demo/demo.js
+dist
+lib
+node_modules
+server_utils/auth_utils.js
+tests
