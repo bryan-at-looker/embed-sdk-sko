@@ -2,7 +2,7 @@ var path = require('path')
 var config = require ('./config')
 
 var user = require('./demo/demo_user.json')
-var { createSignedUrl } = require('./server_utils/auth_utils')
+var { createSignedUrl, createSignedUrl2 } = require('./server_utils/auth_utils')
 
 var webpackConfig = {
   mode: 'development',
@@ -41,10 +41,10 @@ var webpackConfig = {
     port: config.demo_port,
     watchContentBase: true,
     before: (app) => {
-      app.get('/auth', function(req, res) {
+      app.get('/auth', async function(req, res) {
         // Authenticate the request is from a valid user here
         const src = req.query.src;
-        const url = createSignedUrl(src, user, config.host, config.secret);
+        const url = await createSignedUrl(src, user, config.host);
         res.json({ url });
       });
     }
