@@ -1,4 +1,4 @@
-import { LookerEmbedSDK, LookerEmbedLook, LookerEmbedDashboard } from '../src/index'
+import { LookerEmbedSDK, LookerEmbedDashboard } from '../src/index'
 
 import { lookerHost, dashboardId } from './demo_config'
 
