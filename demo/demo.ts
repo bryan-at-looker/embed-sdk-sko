@@ -6,7 +6,13 @@ LookerEmbedSDK.init(lookerHost, '/auth')
 
 
 const setupDashboard = (dashboard: LookerEmbedDashboard) => {
-
+  const dropdown = document.getElementById('select-dropdown')
+  if (dropdown) {
+    dropdown.addEventListener('change', (event) => { 
+      dashboard.updateFilters({ [dashboardStateFilter]: (event.target as HTMLSelectElement).value }) 
+      dashboard.run()
+    })
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -15,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .appendTo('#dashboard')
       .withClassName('looker-embed')
       .withFilters({[dashboardStateFilter]: 'California'})
-      .withTheme('currency_white')
+      .withTheme( 'currency_white' )
       .build()
       .connect()
       .then(setupDashboard)

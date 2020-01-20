@@ -1,10 +1,10 @@
 {  
-  "external_user_id": "bryan-weber-1234",
+  "external_user_id": "firstname-lastname-1234",
   "first_name": "First Name",
   "last_name": "Last Name",
   "session_length": 3600,
   "force_logout_login": true,
-  "external_group_id": "group1",
+  "external_group_id": "customerABC",
   "group_ids": [],
   "permissions": [
     "access_data",
