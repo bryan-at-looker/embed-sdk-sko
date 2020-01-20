@@ -1,6 +1,6 @@
 import { LookerEmbedSDK, LookerEmbedDashboard } from '../src/index'
 
-import { lookerHost, dashboardId } from './demo_config'
+import { lookerHost, dashboardId, dashboardStateFilter } from './demo_config'
 
 LookerEmbedSDK.init(lookerHost, '/auth')
 
@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
     LookerEmbedSDK.createDashboardWithId(dashboardId)
       .appendTo('#dashboard')
       .withClassName('looker-embed')
+      .withFilters({[dashboardStateFilter]: 'California'})
+      .withTheme('currency_white')
       .build()
       .connect()
       .then(setupDashboard)
