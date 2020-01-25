@@ -1,12 +1,14 @@
 import { LookerEmbedSDK, LookerEmbedDashboard } from '../src/index'
 import { looker_host, dashboard_id, dashboard_state_filter, query_object, query_field_name, dashboard_date_filter, query_date_filter, logoUrl, query_calculation } from './demo_config'
 import { LookerSDK, IApiSettings, AuthToken, IError, CorsSession } from '@looker/sdk'
+import { LookerDashboardOptions } from '../src/types'
 
 LookerEmbedSDK.init(looker_host, '/auth')
 document.addEventListener('DOMContentLoaded', embedSdkInit)
 
 let sdk: LookerSDK
 let gDashboard: LookerEmbedDashboard
+let gOptions: LookerDashboardOptions
 class EmbedSession extends CorsSession {
   async getToken() {
     console.log(document.location)
@@ -14,8 +16,6 @@ class EmbedSession extends CorsSession {
     return token
   }
 }
-
-let dashboard_options: any
 
 const session = new EmbedSession({
   base_url: `https://${looker_host}:19999`,
@@ -29,6 +29,7 @@ const setupDashboard = async (dashboard: LookerEmbedDashboard) => {
   if (dropdown) {
     dropdown.addEventListener('change', (event) => { 
       dashboard.updateFilters({ [dashboard_state_filter]: (event.target as HTMLSelectElement).value })
+      changeTitles(gOptions.elements,(event.target as HTMLSelectElement).value)
       dashboard.run()
     })
   }
@@ -43,6 +44,14 @@ const setupDashboard = async (dashboard: LookerEmbedDashboard) => {
   ))
   addStateOptions(states)
   loadingIcon(false)
+
+  const table_icon = document.getElementById('table-swap')
+  if (table_icon) {
+    table_icon.addEventListener('click', () => { 
+      tableChange(table_icon)
+    })
+  }
+
 }
 
 function embedSdkInit () {
@@ -70,6 +79,23 @@ function embedSdkInit () {
   }
 }
 
+function tableChange(table_icon: HTMLElement) {
+  let new_elements = JSON.parse(JSON.stringify(gOptions.elements))
+  const to_table = ( table_icon.getAttribute('data-value') == '0' ) ? true : false
+  table_icon.classList.remove((to_table) ? 'black' : 'violet')
+  table_icon.classList.add((to_table) ? 'violet' : 'black')
+  table_icon.setAttribute('data-value', (to_table) ? '1': '0')
+  if (to_table) {
+    Object.keys(new_elements).forEach(element => {
+      new_elements[element].vis_config.type = 'looker_grid'
+    })
+    gDashboard.setOptions({ elements: new_elements})
+  } else {
+    gDashboard.setOptions({ elements: gOptions.elements })
+  }
+  
+}
+
 async function filtersUpdates( event: any ) {
   loadingIcon(true);
   console.log("dashboard:filters:changed", event)
@@ -95,10 +121,17 @@ async function filtersUpdates( event: any ) {
   loadingIcon(false)
 }
 
-function changeTitles(elements, state) {
-  const new_elements = Object.assign({},elements)
+function changeTitles(elements: any, state: string) {
+  const add_state = (state && state !== '') ? ` (${state})` : ''
+  const new_elements = JSON.parse(JSON.stringify(elements))
   Object.keys(new_elements).forEach(el=>{
-    new_elements[el].title = `${new_elements[el].title} (${state})`
+    console.log(new_elements[el].vis_config.title )
+    if (new_elements[el].vis_config.type == "single_value") {
+      new_elements[el].vis_config.title = new_elements[el].vis_config.title + add_state
+      new_elements[el].title = ""
+    } else {
+      new_elements[el].title = new_elements[el].vis_config.title + add_state
+    }
   })
   gDashboard.setOptions({elements: new_elements})
 }
@@ -107,7 +140,7 @@ function changeHeight( event: any ) {
   console.log(event)
   const div = document.getElementById('dashboard')
   if (event && event.height && div) {
-    div.style.height = `${event.height+20}px`
+    div.style.height = `${event.height+30}px`
   }
 }
 
@@ -151,7 +184,7 @@ function loadingIcon (loading: boolean) {
 
 function loadEvent (event: any) {
   if (event && event.dashboard && event.dashboard.options ) {
-    const options = event.dashboard.options
-    console.log('OPTIONS', options)
+    gOptions =  event.dashboard.options
+    console.log('OPTIONS', gOptions)
   }
 }
