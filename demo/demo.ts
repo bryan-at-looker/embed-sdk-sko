@@ -6,6 +6,7 @@ LookerEmbedSDK.init(looker_host, '/auth')
 document.addEventListener('DOMContentLoaded', embedSdkInit)
 
 let sdk: LookerSDK
+let gDashboard: LookerEmbedDashboard
 class EmbedSession extends CorsSession {
   async getToken() {
     console.log(document.location)
@@ -14,6 +15,8 @@ class EmbedSession extends CorsSession {
   }
 }
 
+let dashboard_options: any
+
 const session = new EmbedSession({
   base_url: `https://${looker_host}:19999`,
   api_version: '3.1'
@@ -21,7 +24,7 @@ const session = new EmbedSession({
 sdk = new LookerSDK(session)
 
 const setupDashboard = async (dashboard: LookerEmbedDashboard) => {
-  
+  gDashboard = dashboard
   const dropdown = document.getElementById('select-dropdown')
   if (dropdown) {
     dropdown.addEventListener('change', (event) => { 
@@ -52,8 +55,9 @@ function embedSdkInit () {
       // .withFilters({[dashboard_date_filter]: '30 days'})
       .withTheme( 'sko' )
       .on('page:property:change', changeHeight ) // dashboards-next
-      // .on('page:properties:changed', changeHeight ) // dashboards
+      .on('page:properties:changed', changeHeight ) // dashboards
       .on('dashboard:filters:changed', filtersUpdates)
+      .on('dashboard:loaded', loadEvent)
       .withNext()
       .build()
       .connect()
@@ -68,7 +72,8 @@ function embedSdkInit () {
 
 async function filtersUpdates( event: any ) {
   loadingIcon(true);
-  console.log(event)
+  console.log("dashboard:filters:changed", event)
+
   // instantiate elements, filters, and query objects
   const dashboard_filters: any = (event && event.dashboard && event.dashboard.dashboard_filters) ? event.dashboard && event.dashboard.dashboard_filters : undefined
   let dropdown = document.getElementById('select-dropdown')
@@ -88,6 +93,14 @@ async function filtersUpdates( event: any ) {
     }
   }
   loadingIcon(false)
+}
+
+function changeTitles(elements, state) {
+  const new_elements = Object.assign({},elements)
+  Object.keys(new_elements).forEach(el=>{
+    new_elements[el].title = `${new_elements[el].title} (${state})`
+  })
+  gDashboard.setOptions({elements: new_elements})
 }
 
 function changeHeight( event: any ) {
@@ -133,5 +146,12 @@ function loadingIcon (loading: boolean) {
   if (loader && icon) {
     icon.style.display = (loading) ? 'none' : ''
     loader.style.display = (loading) ? '' : 'none'
+  }
+}
+
+function loadEvent (event: any) {
+  if (event && event.dashboard && event.dashboard.options ) {
+    const options = event.dashboard.options
+    console.log('OPTIONS', options)
   }
 }
