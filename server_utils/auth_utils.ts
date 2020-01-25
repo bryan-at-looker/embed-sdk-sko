@@ -28,3 +28,12 @@ export function createSignedUrl (
     resolve( sso_obj.url)
   })
 }
+
+export async function accessToken (external_user_id: string) {
+  var user = await sdk.ok(sdk.user_for_credential('embed',external_user_id))
+  if (user && user.id) {
+    return await sdk.ok(sdk.login_user(user['id']))
+  } else {
+    return {}
+  }
+}
