@@ -2,6 +2,7 @@ import { LookerEmbedSDK, LookerEmbedDashboard } from '../src/index'
 import { looker_host, dashboard_id, dashboard_state_filter, query_object, query_field_name, dashboard_date_filter, query_date_filter, logoUrl, query_calculation } from './demo_config'
 import { LookerSDK, IApiSettings, AuthToken, IError, CorsSession } from '@looker/sdk'
 import { LookerDashboardOptions } from '../src/types'
+const user = require('./demo_user.json')
 
 LookerEmbedSDK.init(looker_host, '/auth')
 document.addEventListener('DOMContentLoaded', embedSdkInit)
