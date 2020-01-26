@@ -13,3 +13,4 @@ lib
 node_modules
 server_utils/auth_utils.js
 tests
+demo/demo_user.json
