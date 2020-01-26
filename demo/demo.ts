@@ -1,8 +1,8 @@
 import { LookerEmbedSDK, LookerEmbedDashboard } from '../src/index'
-import { lookerHost, dashboardId } from './demo_config'
+import { looker_host, dashboard_id } from './demo_config'
 const user = require('./demo_user.json')
 
-LookerEmbedSDK.init(lookerHost, '/auth')
+LookerEmbedSDK.init(looker_host, '/auth')
 
 
 const setupDashboard = (dashboard: LookerEmbedDashboard) => {
@@ -10,8 +10,8 @@ const setupDashboard = (dashboard: LookerEmbedDashboard) => {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  if (dashboardId) {
-    LookerEmbedSDK.createDashboardWithId(dashboardId)
+  if (dashboard_id) {
+    LookerEmbedSDK.createDashboardWithId(dashboard_id)
       .appendTo('#dashboard')
       .withClassName('looker-embed')
       .build()
