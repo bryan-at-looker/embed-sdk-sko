@@ -44,15 +44,7 @@ var webpackConfig = {
     ],
     host: config.demo_host,
     port: config.demo_port,
-    disableHostCheck: true,
     https: true,
-    headers: {
-      "Accept": "*",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers": "*",
-      "Access-Control-Allow-Credentials": true
-    },
     watchContentBase: true,
     before: (app) => {
       app.get('/auth', async function(req, res) {
