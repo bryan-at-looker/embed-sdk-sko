@@ -2,6 +2,7 @@ import { LookerEmbedSDK, LookerEmbedDashboard } from '../src/index'
 import { looker_host, dashboard_id, dashboard_state_filter, query_object, query_field_name, dashboard_date_filter, query_date_filter, logoUrl, query_calculation } from './demo_config'
 import { LookerSDK, IApiSettings, AuthToken, IError, CorsSession } from '@looker/sdk'
 import { LookerDashboardOptions } from '../src/types'
+import { swap_element, new_vis_config } from './demo_config'
 
 LookerEmbedSDK.init(looker_host, '/auth')
 document.addEventListener('DOMContentLoaded', embedSdkInit)
@@ -51,7 +52,12 @@ const setupDashboard = async (dashboard: LookerEmbedDashboard) => {
       tableChange(table_icon)
     })
   }
-
+  const donut_icon = document.getElementById('vis-swap')
+  if (donut_icon) {
+    donut_icon.addEventListener('click', () => { 
+      swapVisConfig(donut_icon)
+    })
+  }
 }
 
 function embedSdkInit () {
@@ -87,13 +93,14 @@ function tableChange(table_icon: HTMLElement) {
   table_icon.setAttribute('data-value', (to_table) ? '1': '0')
   if (to_table) {
     Object.keys(new_elements).forEach(element => {
-      new_elements[element].vis_config.type = 'looker_grid'
+      if (new_elements[element].vis_config.type !== 'single_value' ) {
+        new_elements[element].vis_config.type = 'looker_grid'
+      }
     })
     gDashboard.setOptions({ elements: new_elements})
   } else {
     gDashboard.setOptions({ elements: gOptions.elements })
   }
-  
 }
 
 async function filtersUpdates( event: any ) {
@@ -188,3 +195,16 @@ function loadEvent (event: any) {
     console.log('OPTIONS', gOptions)
   }
 }
+
+function swapVisConfig( icon: HTMLElement ) {
+  let new_element = {[swap_element]: gOptions.elements[swap_element] }
+  const to_original = (icon.getAttribute('data-value') === '1') ? true : false
+  icon.classList.remove((to_original) ? 'black' : 'violet')
+  icon.classList.add((to_original) ? 'violet' : 'black')
+  icon.setAttribute('data-value', (to_original) ? '1': '0')
+  if (to_original) {
+    gDashboard.setOptions({ elements: new_element})
+  } else {
+    gDashboard.setOptions({ elements: gOptions.elements })
+  }
+} 

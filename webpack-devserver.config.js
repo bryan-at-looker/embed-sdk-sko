@@ -1,6 +1,5 @@
 var path = require('path')
 var config = require ('./config')
-const proxy = require('http-proxy-middleware');
 var user = require('./demo/demo_user.json')
 var { createSignedUrl, accessToken } = require('./server_utils/auth_utils')
 
@@ -54,19 +53,6 @@ var webpackConfig = {
       "Access-Control-Allow-Headers": "*",
       "Access-Control-Allow-Credentials": true
     },
-    // proxy: {
-    //   '/api': {
-    //     logLevel: 'debug',
-    //     target: process.env.LOOKERSDK_BASE_URL,
-    //     changeOrigin: true,
-    //     secure: false,
-    //     "secure": false,
-    //     "headers": {
-    //       "Host": 'johnkuitheme.dev.looker.com',
-    //       "Origin": null
-    //     },
-    //   }
-    // },
     watchContentBase: true,
     before: (app) => {
       app.get('/auth', async function(req, res) {
