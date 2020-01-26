@@ -31,7 +31,7 @@ export const query_calculation = 'period_over_period'
 
 export const logoUrl: string = 'https://lever-client-logos.s3.amazonaws.com/8409767c-5cbe-4597-9d88-193437980b30-1537395984831.png'
 
-export const swap_element = "42"
+export const swap_element = "51"
 export const new_vis_config = {
   "type": "looker_bar"
 }
