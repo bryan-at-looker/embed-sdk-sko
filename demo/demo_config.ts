@@ -1,7 +1,7 @@
 // The address of your Looker instance. Required.
 export const looker_host = 'sko2020.dev.looker.com'
 // A dashboard that the user can see. Set to 0 to disable dashboard.
-export const dashboard_id = 5
+export const dashboard_id = 6
 // the name of the filter on the dashboard for state
 export const dashboard_state_filter = 'State'
 // api call to run for state dropdown
@@ -35,3 +35,5 @@ export const swap_element = "42"
 export const new_vis_config = {
   "type": "looker_bar"
 }
+
+export const dashbord_layout_filter = 'KPIs'
