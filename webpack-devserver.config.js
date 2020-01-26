@@ -2,12 +2,17 @@ var path = require('path')
 var config = require ('./config')
 
 var user = require('./demo/demo_user.json')
-var { createSignedUrl, createSignedUrl2 } = require('./server_utils/auth_utils')
+var { createSignedUrl } = require('./server_utils/auth_utils')
 
 var webpackConfig = {
   mode: 'development',
   entry: {
     demo: './demo/demo.ts'
+  },
+  node: {
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty'
   },
   output: {
     filename: "[name].js",
