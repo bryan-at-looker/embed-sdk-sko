@@ -44,6 +44,7 @@ var webpackConfig = {
     ],
     host: config.demo_host,
     port: config.demo_port,
+    https: true,
     watchContentBase: true,
     before: (app) => {
       app.get('/auth', async function(req, res) {
