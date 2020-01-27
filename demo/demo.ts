@@ -5,7 +5,7 @@ const user = require('./demo_user.json')
 
 LookerEmbedSDK.init(looker_host, '/auth')
 
-const setupDashboard = (dashboard: LookerEmbedDashboard) => {
+const setupDashboard = async (dashboard: LookerEmbedDashboard) => {
 
 }
 
