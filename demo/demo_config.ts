@@ -30,23 +30,3 @@ export const query_date_filter = 'order_items.previous_period_filter'
 export const query_calculation = 'period_over_period'
 
 export const logoUrl: string = 'https://lever-client-logos.s3.amazonaws.com/8409767c-5cbe-4597-9d88-193437980b30-1537395984831.png'
-
-// export const apiDropdownQuery = {
-
-//   "view": "order_items",
-//   "fields": [
-//       "this_period",
-//       "previous_period",
-//       "users.state"
-//   ],
-//   "filters": {
-//       "order_items.previous_period_filter": "30 days",
-//       "users.country": "USA"
-//   },
-//   "sorts": [
-//       "period_over_period desc"
-//   ],
-//   "limit": "500",
-//   "model": "thelook",
-//   "dynamic_fields": "[{\"measure\":\"this_period\",\"based_on\":\"order_items.total_sale_price\",\"label\":\"This Period\",\"value_format\":null,\"value_format_name\":null,\"_kind_hint\":\"measure\",\"_type_hint\":\"number\",\"filter_expression\":\"${order_items.previous_period} = \\\"This Period\\\"\"},{\"measure\":\"previous_period\",\"based_on\":\"order_items.total_sale_price\",\"label\":\"Previous Period\",\"value_format\":null,\"value_format_name\":null,\"_kind_hint\":\"measure\",\"_type_hint\":\"number\",\"filter_expression\":\"${order_items.previous_period} = \\\"Previous Period\\\"\"},{\"table_calculation\":\"period_over_period\",\"label\":\"Period Over Period\",\"expression\":\"${this_period} / ${previous_period} - 1\",\"value_format\":null,\"value_format_name\":\"percent_1\",\"_kind_hint\":\"measure\",\"_type_hint\":\"number\"}]"
-// }
