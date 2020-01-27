@@ -37,7 +37,6 @@ var webpackConfig = {
     ]
   },
   devServer: {
-    clientLogLevel: 'debug',
     compress: true,
     contentBase: [
       path.join(__dirname, "demo")
