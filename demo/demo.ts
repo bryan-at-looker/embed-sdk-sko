@@ -1,5 +1,6 @@
 import { LookerEmbedSDK, LookerEmbedDashboard } from '../src/index'
 import { looker_host, dashboard_id } from './demo_config'
+
 const user = require('./demo_user.json')
 
 
