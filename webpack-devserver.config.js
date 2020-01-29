@@ -1,5 +1,6 @@
 var path = require('path')
 var config = require ('./config')
+var { accessToken } = require('./server_utils/auth_utils')
 
 var user = require('./demo/demo_user.json')
 var { createSignedUrl } = require('./server_utils/auth_utils')
@@ -52,6 +53,10 @@ var webpackConfig = {
         const src = req.query.src;
         const url = await createSignedUrl(src, user, config.host);
         res.json({ url });
+      });
+      app.get('/token', async function(req, res) {
+        const token = await accessToken(user.external_user_id);
+        res.json( token );
       });
     }
   }

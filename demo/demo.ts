@@ -1,6 +1,21 @@
 import { LookerEmbedSDK, LookerEmbedDashboard } from '../src/index'
 import { looker_host, dashboard_id } from './demo_config'
 import {  dashboard_state_filter } from './demo_config'
+import { LookerSDK, IApiSettings, AuthToken, IError, CorsSession } from '@looker/sdk'
+
+let sdk: LookerSDK
+class EmbedSession extends CorsSession {
+  async getToken() {
+    const token = await sdk.ok(sdk.authSession.transport.request<AuthToken,IError>('GET', `${document.location.origin}/token`  ))
+    return token
+  }
+}
+
+const session = new EmbedSession({
+  base_url: `https://${looker_host}:19999`,
+  api_version: '3.1'
+} as IApiSettings)
+sdk = new LookerSDK(session)
 
 const user = require('./demo_user.json')
 
@@ -15,6 +30,8 @@ const setupDashboard = async (dashboard: LookerEmbedDashboard) => {
       dashboard.run()
     })
   }
+  const me = await sdk.ok(sdk.me())
+  console.log('me', me)
 }
 
 document.addEventListener('DOMContentLoaded', function () {
