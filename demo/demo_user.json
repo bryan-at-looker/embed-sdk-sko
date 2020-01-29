@@ -28,5 +28,5 @@
     "create_alerts"
   ],
   "models": ["thelook"],
-  "user_attributes": { "locale": "en_US" }
+  "user_attributes": { "locale": "en_US" , "country": "USA"}
 }
