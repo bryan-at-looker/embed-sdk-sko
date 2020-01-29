@@ -1,7 +1,7 @@
 // The address of your Looker instance. Required.
 export const looker_host = 'sko2020.dev.looker.com'
 // A dashboard that the user can see. Set to 0 to disable dashboard.
-export const dashboard_id = 5
+export const dashboard_id = 6
 // the name of the filter on the dashboard for state
 export const dashboard_state_filter = 'State'
 // api call to run for state dropdown
@@ -30,3 +30,8 @@ export const query_date_filter = 'order_items.previous_period_filter'
 export const query_calculation = 'period_over_period'
 
 export const logoUrl: string = 'https://lever-client-logos.s3.amazonaws.com/8409767c-5cbe-4597-9d88-193437980b30-1537395984831.png'
+export const swap_element = "51"
+export const new_vis_config = {
+  "type": "looker_bar"
+}
+export const dashbord_layout_filter = 'KPIs'
