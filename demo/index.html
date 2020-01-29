@@ -47,6 +47,14 @@
       </div>
       <div id="dashboard-state"></div>
       <div id="dropdown-selected"></div>
+      <div id="select-dashboard" class="ui selection violet dropdown">
+        <input type="hidden" name="dashboard">
+        <i class="chart line icon violet" style="display: none;"></i>
+        <div class="default text">Dashboards</div>
+        <div id="dashboard-dropdown-menu" class="menu">
+          <div class="item" data-value="">Select a dashboard...</div>
+        </div>
+      </div>
     </div>
     <div class="right menu">
       <div class="item">
@@ -65,6 +73,10 @@
     $('#select-dropdown')
       .dropdown()
     ;
+    $('#select-dashboard')
+      .dropdown()
+    ;
+
     </script>
 </body>
 </html>

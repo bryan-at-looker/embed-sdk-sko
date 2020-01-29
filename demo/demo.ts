@@ -8,7 +8,10 @@ import { dashbord_layout_filter } from './demo_config'
 const user = require('./demo_user.json')
 
 LookerEmbedSDK.init(looker_host, '/auth')
-document.addEventListener('DOMContentLoaded', embedSdkInit)
+document.addEventListener('DOMContentLoaded', ()=> {
+  const dashboard = localStorage.getItem('dashboard') || dashboard_id
+  embedSdkInit(dashboard)
+})
 
 let sdk: LookerSDK
 let gDashboard: LookerEmbedDashboard
@@ -34,6 +37,8 @@ const setupDashboard = async (dashboard: LookerEmbedDashboard) => {
     dropdown.addEventListener('change', (event) => { 
       dashboard.updateFilters({ [dashboard_state_filter]: (event.target as HTMLSelectElement).value })
       dashboard.run()
+      const last_filters = JSON.parse(localStorage.getItem('dashboard_filters') || '{}');
+      localStorage.setItem('dashboard_filters', JSON.stringify(Object.assign(last_filters, { [dashboard_state_filter]: (event.target as HTMLSelectElement).value })))
       changeTitles(gOptions.elements,(event.target as HTMLSelectElement).value)
     })
   }
@@ -60,25 +65,25 @@ const setupDashboard = async (dashboard: LookerEmbedDashboard) => {
       swapVisConfig(donut_icon)
     })
   }
+  addDashboardOptions()
 }
 
-function embedSdkInit () {
+function embedSdkInit ( dashboard_id: any ) {
   const logo = document.getElementById('logo')
+  const last_filters = JSON.parse(localStorage.getItem('dashboard_filters') || '{}');
   if (logo) { logo.setAttribute('src',logoUrl)}
   if (dashboard_id) {
     LookerEmbedSDK.createDashboardWithId(dashboard_id)
       .appendTo('#dashboard')
       .withClassName('looker-embed')
-      .withFilters({
-        [dashbord_layout_filter]: 'Active Users',
-        [dashboard_date_filter]: '30 days'
-      })
+      .withFilters(last_filters)
       .withTheme( 'sko' )
       .on('page:property:change', changeHeight ) // dashboards-next
       // .on('page:properties:changed', changeHeight ) // dashboards
       .on('dashboard:filters:changed', filtersUpdates)
-      .withNext()
+      // .withNext()
       .on('dashboard:loaded', loadEvent)
+      .on('drillmenu:click', drillClick)
       .build()
       .connect()
       .then(setupDashboard)
@@ -114,6 +119,10 @@ async function filtersUpdates( event: any ) {
   loadingIcon(false)
   if (dashboard_filters && dashboard_filters[dashbord_layout_filter] && dashboard_filters[dashbord_layout_filter]) {
     layoutFilter(dashboard_filters[dashbord_layout_filter])
+  }
+
+  if (dashboard_filters) {
+    localStorage.setItem('dashboard_filters', JSON.stringify(dashboard_filters));
   }
 }
 
@@ -245,4 +254,86 @@ function layoutFilter(filter: any) {
   })
   layout.dashboard_layout_components = new_components
   gDashboard.setOptions({ layouts: [layout] })
+}
+
+function drillClick ( event: any) {
+  console.log('drillmenu:click', event)
+  if (event && event.modal) {
+    const dashboard_div = document.getElementById('dashboard')
+    if ( dashboard_div ) {
+      if (dashboard_div.children.length > 1 && dashboard_div.lastChild) {
+        dashboard_div.lastChild.remove()
+      }
+
+      const url = new URL(`https://${looker_host}${event.url}`)
+      const path_split = url.pathname.split('/')
+      const query_params: any = {}
+      url.search.slice(1).split('&').forEach(h=>{
+        const hash = h.split('=')
+        query_params[hash[0]] = url.searchParams.get(hash[0])
+      })
+      console.log(query_params)
+      console.log('Click URL', url)
+      sdk.get(`/queries/models/${path_split[3]}/views/${path_split[4]}/run/csv${url.search}&limit=-1`)
+      .then((data: any) => {
+        var rows = data.value.split('\n'),
+        table = document.createElement('table'),
+        tr = null, td = null,
+        tds = null;
+
+        table.className = "ui celled table"
+
+        for ( var i = 0; i < rows.length; i++ ) {
+            tr = document.createElement('tr');
+            tds = rows[i].split(',');
+            for ( var j = 0; j < tds.length; j++ ) {
+              td = document.createElement('td');
+              td.innerHTML = tds[j];
+              tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        }
+        dashboard_div.appendChild(table)
+    })
+  }
+    return {cancel: true}
+  } else {
+    return {cancel: false}
+  }
+}
+
+async function addDashboardOptions () {
+  const dashboard_dropdown_parent = document.getElementById('select-dashboard')
+  if (dashboard_dropdown_parent) {
+    dashboard_dropdown_parent.addEventListener('change', (event: any) => {
+      const dashboard_div = document.getElementById('dashboard')
+      if (dashboard_div) {
+        dashboard_div.firstChild!.remove()
+        embedSdkInit( (event.target as HTMLSelectElement).value )
+      }
+      localStorage.setItem('dashboard', (event.target as HTMLSelectElement).value )
+    })
+    
+    
+  }
+  const dropdown = document.getElementById('dashboard-dropdown-menu')
+  let dashboards = await sdk.ok(sdk.all_dashboards())
+  dashboards = dashboards.sort((a,b) => {
+    if (a.title!.toLowerCase() > b.title!.toLowerCase() ) { return 1 }
+    if (a.title!.toLowerCase() < b.title!.toLowerCase() ) { return -1 }
+    return 0
+  })
+  if (dropdown && dashboards && dashboards.length > 1) {
+    dashboards.forEach(function (db: any, i: number) {
+      dropdown.appendChild(dashboardItem(db))
+    })
+  }
+}
+
+function dashboardItem (db: any) {
+  const dropdown_item = document.createElement('div')
+  dropdown_item.classList.add('item')
+  dropdown_item.setAttribute('data-value', db.id)
+  dropdown_item.innerHTML = `${db.title}`
+  return dropdown_item
 }
